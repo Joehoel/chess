@@ -10,9 +10,10 @@ import { Chess } from "chess.js"
 import { toColor, toDests } from "../../utils/chess"
 import { router } from "@inertiajs/vue3";
 import { Game } from "@/types/types";
-import { Key } from "chessground/types";
+import { Key, Piece } from "chessground/types";
 import { computed } from "vue";
 import { truncate } from "fs";
+import { json } from "stream/consumers";
 
 const { game, color } = defineProps<{ game: Game, color: 'black' | 'white' }>();
 
@@ -45,19 +46,24 @@ onMounted(() => {
 		},
 		events: {
 			move(from, to) {
+				console.log(from, to, toDests(chess), toDests(chess).get(from));
 				router.post(`/game/${game.id}/move`, {
 					from,
 					to,
+					// TODO reconsider giving the whole toDetst object due to validation for the from step
+					possible_moves: JSON.stringify(toDests(chess).get(from)),
 				}, { preserveScroll: true, replace: true }
 				)
 			}
 		}
 	})
 
+console.log(`game.${game.id}`);
 
-	window.Echo.channel(`game.${game.id}`).listen("MoveEvent", (e: { game: { id: Game['id'] }, move: { from: Key, to: Key } }) => {
-		console.log("MoveEvent", e)
-		board.move(e.move.from, e.move.to)
+	window.Echo.channel(`game.${game.id}`)
+	.listen("MoveEvent", (e: { game: { id: Game['id'] }, move: { from: Key, to: Key } }) => {
+		console.log("MoveEvent", e.game, e.move);
+		board.move(e.move.from, e.move.to);
 	})
 })
 

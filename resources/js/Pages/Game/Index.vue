@@ -7,8 +7,6 @@ const form = useForm({
 	name: "",
 })
 
-
-
 const props = defineProps<{ games: Game[] }>();
 
 </script>
@@ -22,7 +20,7 @@ const props = defineProps<{ games: Game[] }>();
 	</form>
 
 	<ul class="p-1 m-4">
-		<li v-for="game in props.games" class="py-2 flex flex-row justify-between">
+		<li v-for="game in props.games" v-bind:key="game.name" class="py-2 flex flex-row justify-between">
 			<span>{{ game.name }} {{ game.player_count }}/2</span>
 			<Link as="a" class="bg-green-400 p-2 rounded-xl text-white border border-green-500" :href="`/game/${game.id}/join`">
 			Join

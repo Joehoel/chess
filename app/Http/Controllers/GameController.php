@@ -7,6 +7,7 @@ use App\Events\MoveEvent;
 use App\Http\Requests\StoreGameRequest;
 use App\Http\Requests\CreateGameRequest;
 use App\Http\Requests\UpdateGameRequest;
+use App\Http\Requests\StoreMoveRequest;
 use App\Models\Game;
 use App\Models\Player;
 use Illuminate\Http\RedirectResponse;
@@ -27,7 +28,7 @@ class GameController extends Controller
 		]);
 	}
 
-	public function move($id, Request $request)
+	public function move($id, StoreMoveRequest $request)
 	{
 		$game = Game::findOrFail($id);
 
